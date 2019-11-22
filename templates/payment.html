@@ -1,23 +1,8 @@
-{% extends 'layout/main.html' %}
+{% extends 'layout/base.html' %}
 {% block head %}
     <title>Страница оплаты</title>
 
     <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
         .container {
             max-width: 960px;
         }
@@ -57,13 +42,46 @@
                         <textarea class="form-control" id="description" rows="3"></textarea>
                     </div>
                     <hr class="mb-4">
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">К оплате</button>
+                    <button class="btn btn-primary btn-lg btn-block btn-pay" type="submit">К оплате</button>
                 </form>
             </div>
         </div>
-
-        <footer class="my-5 pt-5 text-muted text-center text-small">
-            <p class="mb-1">© 2017-2019 Company Name</p>
-        </footer>
     </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function notify(msg, type) {
+                var types = ['danger', 'success', 'info'];
+                $('.notify, .notify .badge').slideUp(200, 'swing', function () {
+                    $('.notify').children().remove();
+                    $('.notify').append($('<span>').attr('class', 'badge badge-' + types[type]).hide().text(msg));
+                    $('.notify, .notify .badge').slideDown(200, 'swing', 'easeOutQuart');
+                });
+            }
+
+            $('form').submit(function (e) {
+                e.preventDefault();
+                console.log(e);
+                $('form').fadeOut(150);
+                notify('Обработка..', 2);
+                $.ajax({
+                    url: '/action/payment',
+                    type: "POST",
+                    data: JSON.stringify(values),
+                    success: function () {
+                        notify('Готово', 1);
+                        $('textarea').val('')
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        notify('Ошибка ' + data.status + ': ' + ('responseJSON' in data ? data.responseJSON['error_msg'] : data.statusText), 0);
+                    },
+                    complete: function () {
+                        $('form').fadeIn(150);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
