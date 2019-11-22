@@ -1,12 +1,13 @@
 # app.py
-from flask import Flask
+from flask import Flask, render_template
+
 app = Flask(__name__)
 
 
 # A welcome message to test our server
 @app.route('/')
 def index():
-    return "<h1>First init</h1>"
+    return render_template("layout/main.html")
 
 
 if __name__ == '__main__':
