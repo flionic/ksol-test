@@ -7,7 +7,7 @@ app = Flask(__name__)
 # A welcome message to test our server
 @app.route('/')
 def index():
-    return render_template("layout/main.html")
+    return render_template("payment.html")
 
 
 if __name__ == '__main__':

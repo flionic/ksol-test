@@ -1,0 +1,69 @@
+{% extends 'layout/main.html' %}
+{% block head %}
+    <title>Страница оплаты</title>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .container {
+            max-width: 960px;
+        }
+
+        .lh-condensed {
+            line-height: 1.25;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Форма оплаты</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <h4 class="mb-3">Итого:</h4>
+                <form>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="amount">Сумма оплаты</label>
+                            <input type="number" id="amount" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="currency">Валюта оплаты</label>
+                            <select class="custom-select d-block w-100" id="currency" required="">
+                                <option value="">Выбрать...</option>
+                                <option>EUR</option>
+                                <option>USD</option>
+                                <option>RUB</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description">Описание товара</label>
+                        <textarea class="form-control" id="description" rows="3"></textarea>
+                    </div>
+                    <hr class="mb-4">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Оплатить</button>
+                </form>
+            </div>
+        </div>
+
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">© 2017-2019 Company Name</p>
+        </footer>
+    </div>
+{% endblock %}
