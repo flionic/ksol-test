@@ -1,0 +1,8 @@
+<form name="Pay" method="post" action="https://pay.piastrix.com/ru/pay" accept-charset="UTF-8">
+    <input type="hidden" name="amount" value="{{ payment.amount }}"/>
+    <input type="hidden" name="currency" value="{{ payment.currency }}"/>
+    <input type="hidden" name="shop_id" value="{{ payment.shop_id }}"/>
+    <input type="hidden" name="shop_order_id" value="{{ payment.shop_order_id }}"/>
+    <input type="hidden" name="sign" value="{{ payment.sign }}"/>
+    <input type="submit" value="Оплатить"/>
+</form>
