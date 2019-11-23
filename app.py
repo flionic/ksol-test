@@ -1,7 +1,8 @@
 # app.py
 import hashlib
 
-from flask import Flask, render_template, jsonify, request
+import requests
+from flask import Flask, render_template, jsonify, request, redirect
 
 app = Flask(__name__)
 
@@ -49,23 +50,45 @@ def pm_sign(pay_request, keys_required):
     return sign.hexdigest()
 
 
-def piastix_form(payment):
+# TODO проверка по ключам
+# TODO piastix Class + checker curr
+# TODO flask redirects and more
+
+def piastix_form(pm_request):
     keys_required = ["amount", "currency", "shop_id", "shop_order_id"]
-    payment['sign'] = pm_sign(payment, keys_required)
+    pm_request['sign'] = pm_sign(pm_request, keys_required)
 
-    return jsonify({'type': 'html', 'data': render_template('ajax/payform.html', payment=payment)})
-
-
-def piastix_api_bill(payment):
-    keys_required = ["amount", "currency", "shop_id", "shop_order_id"]
-
-    return jsonify({"response": "piastix_api_bill"})
+    return jsonify({'response': 'piastix_api_bill', 'type': 'html', 'data': render_template('ajax/payform.html', payment=pm_request)})
 
 
-def piastix_api_invoice(payment):
+def piastix_api_bill(pm_request):
+    url = 'https://core.piastrix.com/bill/create'
     keys_required = ["shop_amount", "shop_currency", "shop_id", "shop_order_id", "payer_currency"]
 
-    return jsonify({"response": "piastix_api_invoice"})
+    pm_request['shop_amount'] = pm_request.pop('amount')
+    pm_request['payer_currency'] = pm_request.pop('currency')
+    pm_request['shop_currency'] = pm_request['payer_currency']
+    pm_request['sign'] = pm_sign(pm_request, keys_required)
+
+    piastix_response = requests.post(url, json=pm_request)
+
+    # TODO: редирект на url из ответа
+
+    return jsonify({"response": "piastix_api_bill", "piastix_response": piastix_response.json(), "type": "url", "data": piastix_response.json()['data']['url']})
+
+
+def piastix_api_invoice(pm_request):
+    url = 'https://core.piastrix.com/invoice/create'
+    keys_required = ["amount", "currency", "payway", "shop_id", "shop_order_id"]
+
+    pm_request['payway'] = 'payeer_rub'
+    pm_request['sign'] = pm_sign(pm_request, keys_required)
+
+    piastix_response = requests.post(url, json=pm_request)
+
+    # TODO: редирект на страницу оплаты платёжной
+
+    return jsonify({"response": "piastix_api_invoice", "piastix_response": piastix_response.json(), "type": "url", "data": piastix_response.json()['data']['data']['referer']})
 
 
 if __name__ == '__main__':

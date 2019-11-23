@@ -74,6 +74,8 @@
                         console.log(response);
                         if (response.type === 'html') {
                             $('.resp').html(response.data);
+                        } else if (response.type === 'url') {
+                            window.location.replace(response.data);
                         } else {
                             $(e.target).fadeIn(150);
                         }
